@@ -4,10 +4,13 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Circles } from "react-loader-spinner";
 import UserNavigation from "../../../components/UserNavigation";
+import CalenderComponent from "../../../components/CalenderComponent";
+import { bookingAction } from "../../../serverActions/bookingAction";
 import Link from "next/link";
 
 const DynamicPage = () => {
   const [record, setRecord] = useState("");
+  const [selectedDates, setSelectedDates] = useState(null);
 
   const params = useParams();
   const { id } = params;
@@ -24,6 +27,27 @@ const DynamicPage = () => {
     console.log("Dynamic product data", newData);
   };
 
+  const bookingHandler = async () => {
+    if (!selectedDates) {
+      alert("Please select booking Dates..");
+      return;
+    }
+    const bookingDetails = { record, selectedDates };
+    try {
+      const response = await bookingAction(bookingDetails);
+      if (response.success) {
+        alert("Booking Successfull..");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDateSelect = (dates) => {
+    setSelectedDates(dates);
+    console.log("Dates from calender component", dates);
+  };
+
   useEffect(() => {
     dynamicProductHandler();
   }, []);
@@ -34,6 +58,7 @@ const DynamicPage = () => {
       <Link href="/">
         <p>Go Back</p>
       </Link>
+      <CalenderComponent onDatesSelect={handleDateSelect} />
       {record ? (
         <div className="">
           <div className="singleSection">
@@ -64,7 +89,9 @@ const DynamicPage = () => {
                 <button> Discount {record.data.offer}</button>
               </div>
               <div className="singleBtn">
-                <button className="">Book Now</button>
+                <button className="" onClick={() => bookingHandler()}>
+                  Book Now
+                </button>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import DBConnection from "../../../utils/config/db";
 import UserModel from "../../../utils/models/User";
+import BookingModel from "../../../utils/models/Booking";
 
 export async function GET(request, { params }) {
   await DBConnection();
@@ -16,7 +17,7 @@ export async function GET(request, { params }) {
       );
     }
 
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).populate("bookings");
     return NextResponse.json({ success: true, data: user }, { status: 200 });
   } catch (error) {
     console.log(error);
