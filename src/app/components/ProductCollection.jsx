@@ -13,7 +13,7 @@ const ProductCollection = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/admin/add-product`
+        `https://resort-booking-theta.vercel.app/api/admin/add-product`
       );
       const newData = await response.json();
       console.log("Data: ", newData);
